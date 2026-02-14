@@ -34,7 +34,28 @@ return [
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'database' => (static function () {
+                $database = env('DB_DATABASE');
+
+                if ($database === null || trim($database) === '') {
+                    return database_path('database.sqlite');
+                }
+
+                if ($database === ':memory:') {
+                    return $database;
+                }
+
+                $isWindowsAbsolutePath = preg_match('/^[A-Za-z]:[\\\\\\/]/', $database) === 1;
+                $isUnixAbsolutePath = str_starts_with($database, DIRECTORY_SEPARATOR);
+
+                $resolvedPath = ($isWindowsAbsolutePath || $isUnixAbsolutePath)
+                    ? $database
+                    : base_path($database);
+
+                return file_exists($resolvedPath)
+                    ? $resolvedPath
+                    : database_path('database.sqlite');
+            })(),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
