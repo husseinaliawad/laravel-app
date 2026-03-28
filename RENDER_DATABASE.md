@@ -34,3 +34,14 @@ Critical check for the `fe_sendauth: no password supplied` error:
 
 - Ensure at least one password variable is set and non-empty: `DB_PASSWORD` or `PGPASSWORD` or `POSTGRES_PASSWORD` or `DATABASE_PASSWORD`.
 - Do not keep `DB_PASSWORD` or `DB_URL` as empty strings in Render. If not used, remove the variable entirely.
+
+Startup behavior in this repo:
+
+- On container boot, the app now runs `php artisan migrate --force`.
+- It also seeds roles and ensures an admin user exists (`RolePermissionSeeder`, `AdminUserSeeder`).
+
+Optional admin env vars:
+
+- `APE_ADMIN_NAME` (default: `System Admin`)
+- `APE_ADMIN_EMAIL` (default: `admin@ape.test`)
+- `APE_ADMIN_PASSWORD` (default: `password`)
