@@ -21,7 +21,7 @@ WORKDIR /var/www/html
 COPY . .
 
 RUN composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction \
-    && npm ci \
+    && npm install --no-audit --no-fund \
     && npm run build \
     && rm -rf node_modules \
     && mkdir -p storage/logs bootstrap/cache \
