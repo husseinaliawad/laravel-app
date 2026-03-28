@@ -23,3 +23,13 @@ Recommended app env vars on Render:
 Optional single URL approach:
 
 - `DATABASE_URL=postgresql://laravel_7i26_user:<url-encoded-password>@dpg-d740n7k50q8c73b57c40-a/laravel_7i26`
+
+If you are using Render-provided names instead of `DB_*`, the app now also supports:
+
+- `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`
+- `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
+- `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USER`, `DATABASE_PASSWORD`
+
+Critical check for the `fe_sendauth: no password supplied` error:
+
+- Ensure at least one password variable is set and non-empty: `DB_PASSWORD` or `PGPASSWORD` or `POSTGRES_PASSWORD` or `DATABASE_PASSWORD`.

@@ -2,7 +2,10 @@
 
 use Illuminate\Support\Str;
 
-$databaseUrl = env('DB_URL', env('DATABASE_URL', env('POSTGRES_URL')));
+$databaseUrl = env(
+    'DB_URL',
+    env('DATABASE_URL', env('POSTGRES_URL', env('POSTGRESQL_URL')))
+);
 
 return [
 
@@ -105,16 +108,34 @@ return [
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => $databaseUrl,
-            'host' => env('DB_HOST', env('PGHOST', '127.0.0.1')),
-            'port' => env('DB_PORT', env('PGPORT', '5432')),
-            'database' => env('DB_DATABASE', env('PGDATABASE', 'laravel')),
-            'username' => env('DB_USERNAME', env('PGUSER', 'postgres')),
-            'password' => env('DB_PASSWORD', env('PGPASSWORD', '')),
+            'host' => env(
+                'DB_HOST',
+                env('DATABASE_HOST', env('PGHOST', env('POSTGRES_HOST', '127.0.0.1')))
+            ),
+            'port' => env(
+                'DB_PORT',
+                env('DATABASE_PORT', env('PGPORT', env('POSTGRES_PORT', '5432')))
+            ),
+            'database' => env(
+                'DB_DATABASE',
+                env(
+                    'DATABASE_NAME',
+                    env('PGDATABASE', env('POSTGRES_DB', env('POSTGRES_DATABASE', 'laravel')))
+                )
+            ),
+            'username' => env(
+                'DB_USERNAME',
+                env('DATABASE_USER', env('PGUSER', env('POSTGRES_USER', 'postgres')))
+            ),
+            'password' => env(
+                'DB_PASSWORD',
+                env('DATABASE_PASSWORD', env('PGPASSWORD', env('POSTGRES_PASSWORD', '')))
+            ),
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => env('DB_SCHEMA', 'public'),
-            'sslmode' => env('DB_SSLMODE', 'prefer'),
+            'sslmode' => env('DB_SSLMODE', env('PGSSLMODE', 'prefer')),
         ],
 
         'sqlsrv' => [
