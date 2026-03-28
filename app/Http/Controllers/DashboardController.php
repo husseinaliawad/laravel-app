@@ -17,7 +17,10 @@ class DashboardController extends Controller
 
         $avgGrade = Grade::avg('score') ?? 0;
 
-        $attendanceStats = Attendance::selectRaw('SUM(CASE WHEN status = "present" THEN 1 ELSE 0 END) as present_count')
+        $attendanceStats = Attendance::selectRaw(
+            'SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as present_count',
+            ['present']
+        )
             ->selectRaw('COUNT(*) as total_count')
             ->first();
         $avgAttendance = 0;
@@ -31,7 +34,10 @@ class DashboardController extends Controller
             ->leftJoin('attendances', 'enrollments.id', '=', 'attendances.enrollment_id')
             ->groupBy('users.id')
             ->selectRaw('AVG(grades.score) as avg_grade')
-            ->selectRaw('100.0 * SUM(CASE WHEN attendances.status = "present" THEN 1 ELSE 0 END) / NULLIF(COUNT(attendances.id),0) as attendance_rate');
+            ->selectRaw(
+                '100.0 * SUM(CASE WHEN attendances.status = ? THEN 1 ELSE 0 END) / NULLIF(COUNT(attendances.id),0) as attendance_rate',
+                ['present']
+            );
 
         $atRiskCount = DB::query()
             ->fromSub($riskQuery, 'student_stats')

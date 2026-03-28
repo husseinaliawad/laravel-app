@@ -17,7 +17,10 @@ class PerformanceService
 
         $attendanceStats = Attendance::join('enrollments', 'attendances.enrollment_id', '=', 'enrollments.id')
             ->where('enrollments.student_id', $studentId)
-            ->selectRaw('SUM(CASE WHEN attendances.status = "present" THEN 1 ELSE 0 END) as present_count')
+            ->selectRaw(
+                'SUM(CASE WHEN attendances.status = ? THEN 1 ELSE 0 END) as present_count',
+                ['present']
+            )
             ->selectRaw('COUNT(*) as total_count')
             ->first();
 

@@ -24,7 +24,8 @@ class StudentController extends Controller
             ->whereColumn('enrollments.student_id', 'users.id');
 
         $attendanceSub = Attendance::selectRaw(
-            '100.0 * SUM(CASE WHEN attendances.status = "present" THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0)'
+            '100.0 * SUM(CASE WHEN attendances.status = ? THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0)',
+            ['present']
         )
             ->join('enrollments', 'attendances.enrollment_id', '=', 'enrollments.id')
             ->whereColumn('enrollments.student_id', 'users.id');
