@@ -2,10 +2,27 @@
 
 use Illuminate\Support\Str;
 
-$databaseUrl = env(
-    'DB_URL',
-    env('DATABASE_URL', env('POSTGRES_URL', env('POSTGRESQL_URL')))
-);
+$firstEnv = static function (array $keys, mixed $default = null): mixed {
+    foreach ($keys as $key) {
+        $value = env($key);
+
+        if (is_string($value)) {
+            if (trim($value) !== '') {
+                return $value;
+            }
+
+            continue;
+        }
+
+        if ($value !== null) {
+            return $value;
+        }
+    }
+
+    return $default;
+};
+
+$databaseUrl = $firstEnv(['DB_URL', 'DATABASE_URL', 'POSTGRES_URL', 'POSTGRESQL_URL']);
 
 return [
 
@@ -108,34 +125,31 @@ return [
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => $databaseUrl,
-            'host' => env(
-                'DB_HOST',
-                env('DATABASE_HOST', env('PGHOST', env('POSTGRES_HOST', '127.0.0.1')))
+            'host' => $firstEnv(
+                ['DB_HOST', 'DATABASE_HOST', 'PGHOST', 'POSTGRES_HOST'],
+                '127.0.0.1'
             ),
-            'port' => env(
-                'DB_PORT',
-                env('DATABASE_PORT', env('PGPORT', env('POSTGRES_PORT', '5432')))
+            'port' => $firstEnv(
+                ['DB_PORT', 'DATABASE_PORT', 'PGPORT', 'POSTGRES_PORT'],
+                '5432'
             ),
-            'database' => env(
-                'DB_DATABASE',
-                env(
-                    'DATABASE_NAME',
-                    env('PGDATABASE', env('POSTGRES_DB', env('POSTGRES_DATABASE', 'laravel')))
-                )
+            'database' => $firstEnv(
+                ['DB_DATABASE', 'DATABASE_NAME', 'PGDATABASE', 'POSTGRES_DB', 'POSTGRES_DATABASE'],
+                'laravel'
             ),
-            'username' => env(
-                'DB_USERNAME',
-                env('DATABASE_USER', env('PGUSER', env('POSTGRES_USER', 'postgres')))
+            'username' => $firstEnv(
+                ['DB_USERNAME', 'DATABASE_USER', 'PGUSER', 'POSTGRES_USER'],
+                'postgres'
             ),
-            'password' => env(
-                'DB_PASSWORD',
-                env('DATABASE_PASSWORD', env('PGPASSWORD', env('POSTGRES_PASSWORD', '')))
+            'password' => $firstEnv(
+                ['DB_PASSWORD', 'DATABASE_PASSWORD', 'PGPASSWORD', 'POSTGRES_PASSWORD'],
+                ''
             ),
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => env('DB_SCHEMA', 'public'),
-            'sslmode' => env('DB_SSLMODE', env('PGSSLMODE', 'prefer')),
+            'sslmode' => $firstEnv(['DB_SSLMODE', 'PGSSLMODE'], 'prefer'),
         ],
 
         'sqlsrv' => [

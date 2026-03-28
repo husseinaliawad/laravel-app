@@ -33,3 +33,4 @@ If you are using Render-provided names instead of `DB_*`, the app now also suppo
 Critical check for the `fe_sendauth: no password supplied` error:
 
 - Ensure at least one password variable is set and non-empty: `DB_PASSWORD` or `PGPASSWORD` or `POSTGRES_PASSWORD` or `DATABASE_PASSWORD`.
+- Do not keep `DB_PASSWORD` or `DB_URL` as empty strings in Render. If not used, remove the variable entirely.
