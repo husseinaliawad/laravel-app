@@ -13,6 +13,7 @@ Set the password only in Render environment variables (do not commit it to git):
 
 Recommended app env vars on Render:
 
+- `APP_URL=https://<your-render-service>.onrender.com`
 - `DB_CONNECTION=pgsql`
 - `DB_HOST=dpg-d740n7k50q8c73b57c40-a`
 - `DB_PORT=5432`
